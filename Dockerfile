@@ -8,14 +8,9 @@ ENV PYTHONPATH=/app
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy Poetry configuration files
-COPY pyproject.toml poetry.lock* /app/
+COPY requirements.txt .
 
-# Install Poetry and dependencies
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir poetry && \
-    poetry config virtualenvs.create false && \
-    poetry install --no-dev
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the entire application code including scripts
 COPY . .
