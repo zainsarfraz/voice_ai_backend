@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Depends, HTTPException, WebSocket
+from fastapi import APIRouter, WebSocket
 
 from app.services.transcriber import DeepgramTranscriber
 from app.core.logger import logger

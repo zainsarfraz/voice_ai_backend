@@ -4,6 +4,7 @@ import requests
 
 DEEPGRAM_API_KEY = os.getenv("DEEPGRAM_API_KEY")
 
+
 async def get_speech(text: str):
     DEEPGRAM_SPEECH_API = "https://api.deepgram.com/v1/speak?model=aura-asteria-en"
     headers = {
