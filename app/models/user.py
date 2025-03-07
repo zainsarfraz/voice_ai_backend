@@ -25,6 +25,8 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
 
     auth_provider_token = relationship("UserAuthProviderToken", back_populates="user")
+    assistants = relationship("Assistant", back_populates="user")
+
 
     def __repr__(self):
         return f"<User(username={self.username}, email={self.email})>"

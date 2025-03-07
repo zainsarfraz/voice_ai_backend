@@ -25,7 +25,7 @@ def get_auth_token(token_data: TokenDep) -> str:
 
 def get_current_user(
     session: SessionDep, token: str = Depends(get_auth_token)
-) -> User():
+) -> User:
     try:
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
