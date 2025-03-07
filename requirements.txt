@@ -13,3 +13,7 @@ sqlalchemy-utils==0.41.2
 pyjwt==2.10.1
 httpx==0.28.1
 testcontainers==4.9.0
+deepgram-sdk
+langchain
+langchain-openai
+langchain-community
