@@ -11,8 +11,11 @@ class AssistantBase(BaseModel):
     
 class AssistantCreate(BaseModel):
     name: str
-    system_instruction: str
+    system_instructions: str
     
+
+class AssistantID(BaseModel):
+    id: uuid.UUID
 
 class AssistantPublic(AssistantBase):
     id: uuid.UUID

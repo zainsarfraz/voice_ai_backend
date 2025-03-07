@@ -32,8 +32,8 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str = secrets.token_urlsafe(32)
     JWT_ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
-    REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 2 * 24
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 3600
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 3600 * 2 * 24
 
     # Configure environment variable below
     POSTGRES_SERVER: str
