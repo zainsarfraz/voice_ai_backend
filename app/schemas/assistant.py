@@ -1,6 +1,11 @@
 import uuid
-
+from enum import Enum
 from pydantic import BaseModel, ConfigDict
+
+
+class VoiceType(str, Enum):
+    male = "male"
+    female = "female"
 
 
 class AssistantBase(BaseModel):
@@ -8,12 +13,14 @@ class AssistantBase(BaseModel):
     system_instruction: str
     vector_store_collection_name: str
     first_message: str
+    voice: VoiceType
 
 
 class AssistantCreate(BaseModel):
     name: str
     system_instructions: str
     first_message: str
+    voice: VoiceType
 
 
 class AssistantID(BaseModel):

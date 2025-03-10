@@ -14,6 +14,7 @@ class Assistant(Base):
     system_instructions = Column(String, unique=False, nullable=False)
     vector_store_collection_name = Column(String, unique=False, nullable=True)
     first_message = Column(String, unique=False, nullable=True)
+    voice = Column(String, unique=False, nullable=True)
 
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     user_id = Column(

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile
 
 from app.api.deps import get_current_user, SessionDep
 from app.models.user import User
@@ -21,3 +21,11 @@ async def create_assistant(
         assistant_create=assistant, session=session, current_user=current_user
     )
     return assistant
+
+
+@routes.post("/upload_document")
+async def upload_document(file: UploadFile = File(...)):
+    """
+    Uploads a document via FormData and add it to vector store
+    """
+    pass

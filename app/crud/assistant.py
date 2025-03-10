@@ -12,6 +12,7 @@ def create_assistant_service(
     assistant.name = assistant_data["name"]
     assistant.system_instructions = assistant_data["system_instructions"]
     assistant.first_message = assistant_data["first_message"]
+    assistant.voice = assistant_data["voice"]
     assistant.user = current_user
 
     session.add(assistant)

@@ -20,8 +20,8 @@ def generate_token_response_data(user: User) -> Token:
     )
 
 
-async def send_message_to_socket(websocket: WebSocket, message: str):
-    speech = await get_speech(message)
+async def send_message_to_socket(websocket: WebSocket, message: str, voice: str):
+    speech = await get_speech(message, voice)
     media_message = {
         "event": "media",
         "transcript": f"{message}",

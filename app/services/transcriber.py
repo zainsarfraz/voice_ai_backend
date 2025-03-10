@@ -26,7 +26,7 @@ class DeepgramTranscriber:
         else:
             first_message = self.assistant.first_message
 
-        await send_message_to_socket(self.client_socket, first_message)
+        await send_message_to_socket(self.client_socket, first_message, self.assistant.voice)
 
     def _setup_event_handlers(self):
         event_handlers = {
@@ -51,7 +51,7 @@ class DeepgramTranscriber:
         user_message = {"event": "message", "transcript": f"{sentence}"}
         await self.client_socket.send_text(json.dumps(user_message))
         response_text = get_response(self.assistant, self.llm_chat_history_id, sentence)
-        await send_message_to_socket(self.client_socket, response_text)
+        await send_message_to_socket(self.client_socket, response_text, self.assistant.voice)
 
     async def _on_speech_started(self, _, event, **__):
         pass

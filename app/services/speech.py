@@ -5,8 +5,15 @@ import requests
 DEEPGRAM_API_KEY = os.getenv("DEEPGRAM_API_KEY")
 
 
-async def get_speech(text: str):
-    DEEPGRAM_SPEECH_API = "https://api.deepgram.com/v1/speak?model=aura-asteria-en"
+async def get_speech(text: str, voice: str):
+    if voice.upper() == "MALE":
+        voice = "aura-orion-en"
+    elif voice.upper() == "FEMALE":
+        voice = "aura-asteria-en"
+    else:
+        voice = "aura-orion-en"
+
+    DEEPGRAM_SPEECH_API = f"https://api.deepgram.com/v1/speak?model={voice}"
     headers = {
         "Authorization": f"Token {DEEPGRAM_API_KEY}",
         "Content-Type": "application/json",
