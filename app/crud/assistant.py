@@ -9,6 +9,7 @@ def create_assistant_service(session: SessionDep, assistant_create: AssistantCre
     assistant = Assistant()
     assistant.name = assistant_data["name"]
     assistant.system_instructions = assistant_data["system_instructions"]
+    assistant.first_message = assistant_data["first_message"]
     assistant.user = current_user
 
     session.add(assistant)

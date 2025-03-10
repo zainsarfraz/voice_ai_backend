@@ -13,6 +13,7 @@ class Assistant(Base):
     name = Column(String, unique=False, nullable=True)
     system_instructions = Column(String, unique=False, nullable=False)
     vector_store_collection_name = Column(String, unique=False, nullable=True)
+    first_message = Column(String, unique=False, nullable=True)
         
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     user_id = Column(UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
