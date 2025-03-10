@@ -4,7 +4,9 @@ from app.schemas.assistant import AssistantCreate
 from app.models.user import User
 
 
-def create_assistant_service(session: SessionDep, assistant_create: AssistantCreate, current_user: User):
+def create_assistant_service(
+    session: SessionDep, assistant_create: AssistantCreate, current_user: User
+):
     assistant_data = assistant_create.model_dump()
     assistant = Assistant()
     assistant.name = assistant_data["name"]

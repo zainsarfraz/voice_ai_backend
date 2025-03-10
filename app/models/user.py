@@ -27,7 +27,6 @@ class User(Base):
     auth_provider_token = relationship("UserAuthProviderToken", back_populates="user")
     assistants = relationship("Assistant", back_populates="user")
 
-
     def __repr__(self):
         return f"<User(username={self.username}, email={self.email})>"
 

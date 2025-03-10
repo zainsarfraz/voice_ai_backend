@@ -2,8 +2,4 @@
 from app.models.user import User, UserAuthProviderToken
 from app.models.assistant import Assistant
 
-__all__ = [
-    "User",
-    "UserAuthProviderToken",
-    "Assistant"
-]
+__all__ = ["User", "UserAuthProviderToken", "Assistant"]

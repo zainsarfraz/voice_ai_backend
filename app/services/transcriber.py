@@ -19,13 +19,13 @@ class DeepgramTranscriber:
         self.llm_chat_history_id = randint(0, 9999)
         self.assistant = assistant
         self._setup_event_handlers()
-        
+
     async def send_first_message(self):
         if not self.assistant.first_message:
             first_message = "Hello"
         else:
             first_message = self.assistant.first_message
-            
+
         await send_message_to_socket(self.client_socket, first_message)
 
     def _setup_event_handlers(self):
