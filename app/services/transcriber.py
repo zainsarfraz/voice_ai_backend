@@ -73,7 +73,7 @@ class DeepgramTranscriber:
         pass
 
     def _get_live_options(self) -> LiveOptions:
-        return LiveOptions(model="nova-3")
+        return LiveOptions(model="nova-3", punctuate=True)
 
     async def start(self):
         if await self.dg_connection.start(self._get_live_options()) is False:

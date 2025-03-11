@@ -1,4 +1,3 @@
-import secrets
 from typing import Any, Literal, Annotated
 
 from pydantic import (
@@ -30,10 +29,10 @@ class Settings(BaseSettings):
 
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
 
-    SECRET_KEY: str = secrets.token_urlsafe(32)
+    SECRET_KEY: str
     JWT_ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 3600
-    REFRESH_TOKEN_EXPIRE_MINUTES: int = 3600 * 2 * 24
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 3600 * 30
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 3600 * 365
 
     # Configure environment variable below
     POSTGRES_SERVER: str

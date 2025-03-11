@@ -12,7 +12,6 @@ class Assistant(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     name = Column(String, unique=False, nullable=True)
     system_instructions = Column(String, unique=False, nullable=False)
-    vector_store_collection_name = Column(String, unique=False, nullable=True)
     first_message = Column(String, unique=False, nullable=True)
     voice = Column(String, unique=False, nullable=True)
 

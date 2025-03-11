@@ -13,3 +13,4 @@ app.egg-info
 .coverage
 htmlcov
 .cache
+chroma/
