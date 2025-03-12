@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 
 from app.api.deps import SessionDep
 from app.models.assistant import Assistant
-from app.schemas.assistant import AssistantCreate
+from app.schemas.assistant import AssistantCreate, AssistantUpdate
 from app.models.user import User
 
 
@@ -11,10 +11,9 @@ def create_assistant_service(
 ):
     assistant_data = assistant_create.model_dump()
     assistant = Assistant()
-    assistant.name = assistant_data["name"]
-    assistant.system_instructions = assistant_data["system_instructions"]
-    assistant.first_message = assistant_data["first_message"]
-    assistant.voice = assistant_data["voice"]
+    for key, value in assistant_data.items():
+        setattr(assistant, key, value)
+
     assistant.user = current_user
 
     session.add(assistant)
@@ -53,3 +52,17 @@ def delete_assistant_by_id_service(
     assistant = get_assistant_by_id_service(session, current_user, assistant_id)
     session.delete(assistant)
     session.commit()
+
+
+def update_assistant_service(
+    session: SessionDep, current_user: User, assistant_id: str, assistant_update: AssistantUpdate
+):
+    assistant = get_assistant_by_id_service(session, current_user, assistant_id)
+    assistant_data = assistant_update.model_dump(exclude_unset=True)
+    for key, value in assistant_data.items():
+        setattr(assistant, key, value)
+    
+    session.commit()
+    session.refresh(assistant)
+    
+    return assistant

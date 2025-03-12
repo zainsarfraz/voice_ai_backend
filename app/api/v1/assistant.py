@@ -12,14 +12,15 @@ from fastapi import (
 
 from app.api.deps import get_current_user, SessionDep
 from app.models.user import User
-from app.schemas.assistant import AssistantCreate, AssistantID, AssistantPublic
+from app.schemas.assistant import AssistantCreate, AssistantID, AssistantPublic, AssistantUpdate
 from app.crud.assistant import (
     create_assistant_service,
     get_all_assistants_service,
     get_assistant_by_id_service,
     delete_assistant_by_id_service,
+    update_assistant_service,
 )
-from app.services.rag import add_doc_to_vector_store
+from app.services.rag import add_doc_to_vector_store, files_in_collection
 from app.core.logger import logger
 
 
@@ -73,6 +74,25 @@ async def get_assistant(
     return assistant
 
 
+@routes.put("/{assistant_id}", description="Edit an Assistant", response_model=AssistantPublic)
+async def edit_assistant(
+    assistant_id: str,
+    assistant_update: AssistantUpdate,
+    session: SessionDep,
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Update an assistant's details.
+    """
+    assistant = update_assistant_service(
+        session=session,
+        current_user=current_user,
+        assistant_id=assistant_id,
+        assistant_update=assistant_update,
+    )
+    return assistant
+
+
 @routes.delete(
     "/{assistant_id}",
     description="Delete an Assistant",
@@ -94,7 +114,27 @@ async def delete_assistant(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@routes.post("/upload_document")
+@routes.get(
+    "/{assistant_id}/knowledge_base",
+    description="Get Vector store file names of assistant",
+    response_model=List[str],
+)
+async def get_assistant_knowledgebase(
+    assistant_id: str
+):
+    """
+    Retrieve vector store file names of assistant
+    """
+    files = files_in_collection(str(assistant_id))
+
+    return files
+
+
+@routes.post(
+    "/{assistant_id}/upload_document",
+    description="Upload pdf files in assistant knowledge base",
+    response_model=str
+)
 async def upload_document(
     session: SessionDep,
     assistant_id: str,
@@ -118,4 +158,4 @@ async def upload_document(
             detail="Failed to upload document to vector store",
         )
 
-    return {"message": "Document added to vector store."}
+    return "Document added to vector store."
