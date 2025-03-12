@@ -55,14 +55,17 @@ def delete_assistant_by_id_service(
 
 
 def update_assistant_service(
-    session: SessionDep, current_user: User, assistant_id: str, assistant_update: AssistantUpdate
+    session: SessionDep,
+    current_user: User,
+    assistant_id: str,
+    assistant_update: AssistantUpdate,
 ):
     assistant = get_assistant_by_id_service(session, current_user, assistant_id)
     assistant_data = assistant_update.model_dump(exclude_unset=True)
     for key, value in assistant_data.items():
         setattr(assistant, key, value)
-    
+
     session.commit()
     session.refresh(assistant)
-    
+
     return assistant

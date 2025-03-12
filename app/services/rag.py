@@ -60,10 +60,8 @@ def files_in_collection(collection_name: str):
             persist_directory=PERSIST_DIRECTORY_PATH,
             create_collection_if_not_exists=False,
         )
-        data = vector_strore.get(include=['metadatas'])
-        unique_titles = list({item['title'] for item in data['metadatas']})
+        data = vector_strore.get(include=["metadatas"])
+        unique_titles = list({item["title"] for item in data["metadatas"]})
         return unique_titles
     except Exception:
         return []
-    
-    

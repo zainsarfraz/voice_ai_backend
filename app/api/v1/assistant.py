@@ -12,7 +12,12 @@ from fastapi import (
 
 from app.api.deps import get_current_user, SessionDep
 from app.models.user import User
-from app.schemas.assistant import AssistantCreate, AssistantID, AssistantPublic, AssistantUpdate
+from app.schemas.assistant import (
+    AssistantCreate,
+    AssistantID,
+    AssistantPublic,
+    AssistantUpdate,
+)
 from app.crud.assistant import (
     create_assistant_service,
     get_all_assistants_service,
@@ -74,7 +79,9 @@ async def get_assistant(
     return assistant
 
 
-@routes.put("/{assistant_id}", description="Edit an Assistant", response_model=AssistantPublic)
+@routes.put(
+    "/{assistant_id}", description="Edit an Assistant", response_model=AssistantPublic
+)
 async def edit_assistant(
     assistant_id: str,
     assistant_update: AssistantUpdate,
@@ -119,9 +126,7 @@ async def delete_assistant(
     description="Get Vector store file names of assistant",
     response_model=List[str],
 )
-async def get_assistant_knowledgebase(
-    assistant_id: str
-):
+async def get_assistant_knowledgebase(assistant_id: str):
     """
     Retrieve vector store file names of assistant
     """
@@ -133,7 +138,7 @@ async def get_assistant_knowledgebase(
 @routes.post(
     "/{assistant_id}/upload_document",
     description="Upload pdf files in assistant knowledge base",
-    response_model=str
+    response_model=str,
 )
 async def upload_document(
     session: SessionDep,

@@ -1,6 +1,6 @@
 import uuid
 from enum import Enum
-from typing import Optional, List
+from typing import Optional
 from pydantic import BaseModel, ConfigDict
 
 
@@ -29,12 +29,12 @@ class AssistantUpdate(BaseModel):
     first_message: Optional[str] = None
     voice: Optional[VoiceType] = None
 
-    
+
 class AssistantID(BaseModel):
     id: uuid.UUID
 
 
 class AssistantPublic(AssistantBase):
     id: uuid.UUID
-    
+
     model_config = ConfigDict(from_attributes=True)
