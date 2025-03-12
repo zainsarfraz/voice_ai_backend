@@ -47,7 +47,9 @@ def get_assistant_by_id_service(
     return assistant
 
 
-def delete_assistant_by_id_service(session: SessionDep, current_user: User, assistant_id: str):
+def delete_assistant_by_id_service(
+    session: SessionDep, current_user: User, assistant_id: str
+):
     assistant = get_assistant_by_id_service(session, current_user, assistant_id)
     session.delete(assistant)
     session.commit()
