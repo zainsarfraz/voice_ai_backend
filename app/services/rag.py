@@ -42,7 +42,7 @@ def search_vector_store(collection_name: str, query: str):
     )
     results = vector_strore.similarity_search_with_relevance_scores(query=query, k=5)
     formatted_results = []
-    for doc, score in results:
+    for doc in results:
         formatted_results.append(
             {
                 "content": doc.page_content,

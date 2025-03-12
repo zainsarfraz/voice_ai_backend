@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, File, UploadFile, HTTPException, status
+from fastapi import APIRouter, Depends, File, UploadFile, HTTPException, status, Response
 
 from app.api.deps import get_current_user, SessionDep
 from app.models.user import User
@@ -9,6 +9,7 @@ from app.crud.assistant import (
     create_assistant_service,
     get_all_assistants_service,
     get_assistant_by_id_service,
+    delete_assistant_by_id_service
 )
 from app.services.rag import add_doc_to_vector_store
 from app.core.logger import logger
@@ -60,13 +61,27 @@ async def get_assistant(
     assistant = get_assistant_by_id_service(
         session=session, current_user=current_user, assistant_id=assistant_id
     )
-    if not assistant:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Assistnat not found",
-        )
 
     return assistant
+
+
+@routes.delete(
+    "/{assistant_id}",
+    description="Delete an Assistant",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_assistant(
+    assistant_id: str,
+    session: SessionDep,
+    current_user=Depends(get_current_user),
+):
+    """
+    Delete a single assistant by its ID for the current user.
+    Also deletes associated data from ChromaDB.
+    """
+    delete_assistant_by_id_service(session=session, current_user=current_user, assistant_id=assistant_id)
+    
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @routes.post("/upload_document")
@@ -83,12 +98,6 @@ async def upload_document(
     assistant = get_assistant_by_id_service(
         session=session, current_user=current_user, assistant_id=assistant_id
     )
-
-    if not assistant:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Assistnat not found",
-        )
 
     try:
         await add_doc_to_vector_store(file, str(assistant.id))

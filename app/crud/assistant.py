@@ -1,3 +1,5 @@
+from fastapi import HTTPException, status
+
 from app.api.deps import SessionDep
 from app.models.assistant import Assistant
 from app.schemas.assistant import AssistantCreate
@@ -37,4 +39,15 @@ def get_assistant_by_id_service(
         .filter(Assistant.id == assistant_id, Assistant.user_id == current_user.id)
         .first()
     )
+    if not assistant:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Assistant not found",
+        )
     return assistant
+
+
+def delete_assistant_by_id_service(session: SessionDep, current_user: User, assistant_id: str):
+    assistant = get_assistant_by_id_service(session, current_user, assistant_id)
+    session.delete(assistant)
+    session.commit()
