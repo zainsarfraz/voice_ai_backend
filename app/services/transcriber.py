@@ -6,18 +6,26 @@ from fastapi import WebSocket
 from deepgram import DeepgramClient, LiveTranscriptionEvents, LiveOptions
 
 from app.services.chat_model import get_response
-from app.utils import send_message_to_socket
+from app.utils import send_message_to_socket, send_message_to_twilio
 from app.core.logger import logger
 from app.models.assistant import Assistant
 
 
 class DeepgramTranscriber:
-    def __init__(self, client_socket: WebSocket, assistant: Assistant):
+    def __init__(
+        self,
+        client_socket: WebSocket,
+        assistant: Assistant,
+        call_type: str = "web",
+        sid: str = "",
+    ):
         self.client_socket = client_socket
         self.deepgram = DeepgramClient(os.getenv("DEEPGRAM_API_KEY"))
         self.dg_connection = self.deepgram.listen.asyncwebsocket.v("1")
         self.llm_chat_history_id = randint(0, 9999)
         self.assistant = assistant
+        self.call_type = call_type
+        self.sid = sid
         self._setup_event_handlers()
 
     async def send_first_message(self):
@@ -26,9 +34,15 @@ class DeepgramTranscriber:
         else:
             first_message = self.assistant.first_message
 
-        await send_message_to_socket(
-            self.client_socket, first_message, self.assistant.voice
-        )
+        if self.call_type == "twilio":
+            await send_message_to_twilio(
+                self.client_socket, first_message, self.assistant.voice, sid=self.sid
+            )
+
+        if self.call_type == "web":
+            await send_message_to_socket(
+                self.client_socket, first_message, self.assistant.voice
+            )
 
     def _setup_event_handlers(self):
         event_handlers = {
@@ -53,9 +67,15 @@ class DeepgramTranscriber:
         user_message = {"event": "message", "transcript": f"{sentence}"}
         await self.client_socket.send_text(json.dumps(user_message))
         response_text = get_response(self.assistant, self.llm_chat_history_id, sentence)
-        await send_message_to_socket(
-            self.client_socket, response_text, self.assistant.voice
-        )
+
+        if self.call_type == "twilio":
+            await send_message_to_twilio(
+                self.client_socket, response_text, self.assistant.voice, self.sid
+            )
+        if self.call_type == "web":
+            await send_message_to_socket(
+                self.client_socket, response_text, self.assistant.voice
+            )
 
     async def _on_speech_started(self, _, event, **__):
         pass
@@ -73,7 +93,17 @@ class DeepgramTranscriber:
         pass
 
     def _get_live_options(self) -> LiveOptions:
-        return LiveOptions(model="nova-3", punctuate=True)
+        if self.call_type == "web":
+            return LiveOptions(model="nova-3", punctuate=True)
+        if self.call_type == "twilio":
+            return LiveOptions(
+                model="nova-phonecall",
+                language="en-US",
+                channels=1,
+                sample_rate=8000,
+                encoding="mulaw",
+                smart_format=True,
+            )
 
     async def start(self):
         if await self.dg_connection.start(self._get_live_options()) is False:

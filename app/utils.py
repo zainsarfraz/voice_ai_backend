@@ -20,15 +20,32 @@ def generate_token_response_data(user: User) -> Token:
     )
 
 
-async def send_message_to_socket(websocket: WebSocket, message: str, voice: str):
+async def send_message_to_socket(
+    websocket: WebSocket, message: str, voice: str, sid: str = ""
+):
     speech = await get_speech(message, voice)
     media_message = {
         "event": "media",
         "transcript": f"{message}",
-        "streamSid": "",
+        "streamSid": sid,
         "media": {
             "payload": base64.b64encode(speech).decode("ascii"),
             "track": "outbound",
+        },
+    }
+    await websocket.send_text(json.dumps(media_message))
+
+
+async def send_message_to_twilio(
+    websocket: WebSocket, message: str, voice: str, sid: str = ""
+):
+    speech = await get_speech(message, voice, sid)
+    media_message = {
+        "event": "media",
+        "streamSid": sid,
+        "media": {
+            "payload": base64.b64encode(speech).decode("ascii"),
+            "track": "inbound",
         },
     }
     await websocket.send_text(json.dumps(media_message))
