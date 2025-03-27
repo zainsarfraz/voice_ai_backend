@@ -44,6 +44,7 @@ class Settings(BaseSettings):
     TWILIO_ACCOUNT_SID: str
     TWILIO_AUTH_TOKEN: str
     TWILIO_PHONE_NUMBER: str
+    NGROK_URL: str
 
     @computed_field  # type: ignore[prop-decorator]
     @property

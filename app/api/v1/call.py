@@ -36,7 +36,7 @@ async def make_call(assistant_id: str, phone_number: str):
     twiml = (
         f"""<Response>
                     <Connect>
-                        <Stream url="wss://4d11-182-189-25-70.ngrok-free.app/api/v1/call/stream?assistant_id={assistant_id}"/>
+                        <Stream url="{settings.NGROK_URL}?assistant_id={assistant_id}"/>
                     </Connect>
                     <Pause length="60"/>
                 </Response>""",
