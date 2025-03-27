@@ -36,11 +36,14 @@ async def make_call(assistant_id: str, phone_number: str):
     twiml = (
         f"""<Response>
                     <Connect>
-                        <Stream url="{settings.NGROK_URL}?assistant_id={assistant_id}"/>
+                        <Stream url="{settings.NGROK_URL}">
+                            <Parameter name="assistant_id" value="{assistant_id}"/>
+                        </Stream>
                     </Connect>
                     <Pause length="60"/>
                 </Response>""",
     )
+
     call = twilio_client.calls.create(
         twiml=twiml,
         to=phone_number,
@@ -53,11 +56,6 @@ async def make_call(assistant_id: str, phone_number: str):
 @routes.websocket("/stream")
 async def stream_audio(websocket: WebSocket, session: SessionDep):
     """Handles WebSocket connections from Twilio Media Streams."""
-    assistant = (
-        session.query(Assistant)
-        .filter(Assistant.id == "03a994cf-e09c-4a73-9cc2-6857c70a1ea3")
-        .first()
-    )
 
     logger.info("Connected to Twilio Media Stream")
     await websocket.accept()
@@ -67,10 +65,15 @@ async def stream_audio(websocket: WebSocket, session: SessionDep):
             data = await websocket.receive_text()
             message = json.loads(data)
             event = message.get("event")
-
             if event == "start":
                 streamSid = message["start"]["streamSid"]
+                assistant_id = message["start"]["customParameters"]["assistant_id"]
 
+                assistant = (
+                    session.query(Assistant)
+                    .filter(Assistant.id == assistant_id)
+                    .first()
+                )
                 deepgram_transcriber = DeepgramTranscriber(
                     websocket, assistant, call_type="twilio", sid=streamSid
                 )
