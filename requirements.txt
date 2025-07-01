@@ -21,3 +21,4 @@ langchain-chroma
 ruff
 python-multipart
 twilio
+pypdf
